@@ -1,4 +1,5 @@
 #include <iostream>
+#include <set>
 
 #include "Yume/Engine.hpp"
 

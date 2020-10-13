@@ -6,16 +6,18 @@
 #include "Yume/Entity.hpp"
 
 
+enum CommandNames { move_right, move_left, move_up, move_down, stop_move_right, stop_move_left, stop_move_up, stop_move_down };
+
+
 class Game : public GameState {
 public:
   Game();
 
-  void init(DisplayManager* dm) override;
+  void init(DisplayManager* dm, KeyBinds* kb) override;
   void cleanUp() override;
 
-  // todo: add KeyBinds class
-  //void handleInputs(Engine* engine) override;
-  void update() override;
+  void handleInputs(KeyBinds* kb) override;
+  void update(int dt) override;
   void display(const DisplayManager* dm) override;
 
 private:
