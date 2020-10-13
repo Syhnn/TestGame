@@ -2,6 +2,8 @@
 
 #include "Yume/Engine.hpp"
 
+#include "Game.hpp"
+
 
 using namespace std;
 
@@ -13,6 +15,9 @@ int main(int argc, char* argv[]) {
     cout << "shit happened" << endl;
     return 1;
   }
+
+  Game g;
+  e.pushState(&g);
 
   e.mainloop();
 
