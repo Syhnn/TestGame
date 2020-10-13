@@ -3,6 +3,7 @@
 
 #include "Yume/Engine.hpp"
 #include "Yume/GameState.hpp"
+#include "Yume/Entity.hpp"
 
 
 class Game : public GameState {
@@ -18,7 +19,7 @@ public:
   void display(const DisplayManager* dm) override;
 
 private:
-  int tmp;
+  Entity test;
 };
 
 #endif // _GAME_HPP_
