@@ -20,15 +20,21 @@ Game::Game()
 
 void Game::init(DisplayManager* dm, KeyBinds* kb) {
   // import assets
-  string path = "assets/culture.png";
-  int tmp = dm->loadTexture(path, 383, 501);
+  string path = "assets/testchar.png";
+  int tmp = dm->loadTexture(path, 32, 32);
   if (tmp == -1) {
     cout << "Couldn't load texture " << path << endl;
+  } else {
+    for (int pose(0); pose < 4; ++pose) {
+      for (int frame(0); frame < 4; ++frame) {
+        dm->addTextureClip(tmp, frame * 32, pose * 32, 32, 32);
+      }
+    }
   }
 
   // create entities
-  test.texture_id = tmp;
-  addEntity(&test);
+  player.texture_id = tmp;
+  addEntity(&player);
 
   kb->bindKeyUp(Key::Z, CommandNames::stop_move_up);
   kb->bindKeyUp(Key::Q, CommandNames::stop_move_left);
@@ -49,45 +55,44 @@ void Game::handleInputs(KeyBinds* kb) {
   for (int c : commands) {
     switch(c) {
       case CommandNames::move_left:
-        test.vx -= 1;
+        player.vx -= 1;
         break;
       case CommandNames::move_right:
-        test.vx += 1;
+        player.vx += 1;
         break;
       case CommandNames::move_up:
-        test.vy -= 1;
+        player.vy -= 1;
         break;
       case CommandNames::move_down:
-        test.vy += 1;
+        player.vy += 1;
         break;
       case CommandNames::stop_move_left:
-        test.vx += 1;
+        player.vx += 1;
         break;
       case CommandNames::stop_move_right:
-        test.vx -= 1;
+        player.vx -= 1;
         break;
       case CommandNames::stop_move_up:
-        test.vy += 1;
+        player.vy += 1;
         break;
       case CommandNames::stop_move_down:
-        test.vy -= 1;
+        player.vy -= 1;
         break;
     }
   }
 }
 
 void Game::update(int dt) {
-  cout << "posx : " << test.posx << " - posy : " << test.posy << " - vx : " << test.vx << " - vy : " << test.vy << endl;
-  test.posx += test.vx * dt / 2;
-  test.posy += test.vy * dt / 2;
-  if (test.posx > 641) test.posx = 641;
-  else if (test.posx < 0) test.posx = 0;
-  if (test.posy > 267) test.posy = 267;
-  else if (test.posy < 0) test.posy = 0;
+  player.posx += player.vx * dt / 2;
+  player.posy += player.vy * dt / 2;
+  if (player.posx > 992) player.posx = 992;
+  else if (player.posx < 0) player.posx = 0;
+  if (player.posy > 736) player.posy = 736;
+  else if (player.posy < 0) player.posy = 0;
 }
 
-void Game::display(const DisplayManager* dm) {
-  GameState::display(dm);
+void Game::display(const DisplayManager* dm, const int dt) {
+  GameState::display(dm, dt);
   dm->render();
 }
 

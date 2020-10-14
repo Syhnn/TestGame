@@ -5,6 +5,8 @@
 #include "Yume/GameState.hpp"
 #include "Yume/Entity.hpp"
 
+#include "Player.hpp"
+
 
 enum CommandNames { move_right, move_left, move_up, move_down, stop_move_right, stop_move_left, stop_move_up, stop_move_down };
 
@@ -18,10 +20,10 @@ public:
 
   void handleInputs(KeyBinds* kb) override;
   void update(int dt) override;
-  void display(const DisplayManager* dm) override;
+  void display(const DisplayManager* dm, const int dt) override;
 
 private:
-  Entity test;
+  Player player;
 };
 
 #endif // _GAME_HPP_
