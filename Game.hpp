@@ -24,6 +24,8 @@ public:
 
 private:
   Player player;
+
+  int text;
 };
 
 #endif // _GAME_HPP_

@@ -32,6 +32,11 @@ void Game::init(DisplayManager* dm, KeyBinds* kb) {
     }
   }
 
+  text = dm->loadText("abcdefghijklmnopqrstuvwxyz");
+  if (text == -1) {
+    cout << "Couldn't load text" << endl;
+  }
+
   // create entities
   player.texture_id = tmp;
   addEntity(&player);
@@ -93,6 +98,7 @@ void Game::update(int dt) {
 
 void Game::display(const DisplayManager* dm, const int dt) {
   GameState::display(dm, dt);
+  dm->renderTexture(text, 10, 10);
   dm->render();
 }
 
