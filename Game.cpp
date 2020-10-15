@@ -11,14 +11,14 @@ using namespace std;
 
 // Constructors and destructor
 
-Game::Game()
-  //
+Game::Game() :
+  GameState()
 {}
 
 
 // Public methods
 
-void Game::init(DisplayManager* dm, KeyBinds* kb) {
+void Game::init(DisplayManager* dm) {
   // import assets
   string path = "assets/testchar.png";
   int tmp = dm->loadTexture(path, 32, 32);
@@ -55,7 +55,9 @@ void Game::cleanUp() {
 
 }
 
-void Game::handleInputs(KeyBinds* kb) {
+void Game::handleInputs(Engine* engine) {
+  GameState::handleInputs(engine);
+
   vector<int> commands = kb->getEvents();
   for (int c : commands) {
     switch(c) {

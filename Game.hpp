@@ -15,10 +15,10 @@ class Game : public GameState {
 public:
   Game();
 
-  void init(DisplayManager* dm, KeyBinds* kb) override;
+  void init(DisplayManager* dm) override;
   void cleanUp() override;
 
-  void handleInputs(KeyBinds* kb) override;
+  void handleInputs(Engine* engine) override;
   void update(int dt) override;
   void display(const DisplayManager* dm, const int dt) override;
 
