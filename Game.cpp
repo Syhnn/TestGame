@@ -4,10 +4,119 @@
 #include <string>
 #include "Yume/DisplayManager.hpp"
 #include "Yume/KeyBinds.hpp"
+#include "Yume/Command.hpp"
 
 
 using namespace std;
 
+
+class MoveRight : public Command {
+public:
+  MoveRight(Player* p) : player(p) {}
+
+  void callback() override {
+    if (player) player->vx += 1;
+  }
+
+private:
+  Player* player;
+};
+
+class MoveLeft : public Command {
+public:
+  MoveLeft(Player* p) : player(p) {}
+
+  void callback() override {
+    if (player) player->vx -= 1;
+  }
+
+private:
+  Player* player;
+};
+
+class MoveUp : public Command {
+public:
+  MoveUp(Player* p) : player(p) {}
+
+  void callback() override {
+    if (player) player->vy -= 1;
+  }
+
+private:
+  Player* player;
+};
+
+class MoveDown : public Command {
+public:
+  MoveDown(Player* p) : player(p) {}
+
+  void callback() override {
+    if (player) player->vy += 1;
+  }
+
+private:
+  Player* player;
+};
+
+class StopMoveRight : public Command {
+public:
+  StopMoveRight(Player* p) : player(p) {}
+
+  void callback() override {
+    if (player) player->vx -= 1;
+  }
+
+private:
+  Player* player;
+};
+
+class StopMoveLeft : public Command {
+public:
+  StopMoveLeft(Player* p) : player(p) {}
+
+  void callback() override {
+    if (player) player->vx += 1;
+  }
+
+private:
+  Player* player;
+};
+
+class StopMoveUp : public Command {
+public:
+  StopMoveUp(Player* p) : player(p) {}
+
+  void callback() override {
+    if (player) player->vy += 1;
+  }
+
+private:
+  Player* player;
+};
+
+class StopMoveDown : public Command {
+public:
+  StopMoveDown(Player* p) : player(p) {}
+
+  void callback() override {
+    if (player) player->vy -= 1;
+  }
+
+private:
+  Player* player;
+};
+
+class ExitToMenu : public Command {
+public:
+  ExitToMenu(Engine* e) : engine(e) {}
+
+  void callback() override {
+    if (engine) engine->popState();
+  }
+
+private:
+  Engine* engine;
+};
 
 // Constructors and destructor
 
@@ -20,7 +129,7 @@ Game::Game() :
 
 // Public methods
 
-void Game::init(DisplayManager* dm) {
+void Game::init(Engine* e, DisplayManager* dm) {
   // import assets
   string path = "assets/testchar.png";
   int tmp = dm->loadTexture(path, 32, 32);
@@ -43,56 +152,52 @@ void Game::init(DisplayManager* dm) {
   player.texture_id = tmp;
   addEntity(&player);
 
-  kb->bindKeyUp(Key::Z, CommandNames::stop_move_up);
-  kb->bindKeyUp(Key::Q, CommandNames::stop_move_left);
-  kb->bindKeyUp(Key::S, CommandNames::stop_move_down);
-  kb->bindKeyUp(Key::D, CommandNames::stop_move_right);
-  kb->bindKeyDown(Key::Z, CommandNames::move_up);
-  kb->bindKeyDown(Key::Q, CommandNames::move_left);
-  kb->bindKeyDown(Key::S, CommandNames::move_down);
-  kb->bindKeyDown(Key::D, CommandNames::move_right);
-  kb->bindKeyDown(Key::M, CommandNames::exit_to_menu);
+
+  Command* c(nullptr);
+
+  c = new StopMoveUp(&player);
+  commands.insert(c);
+  kb->bindKeyUp(Key::Z, c);
+
+  c = new StopMoveLeft(&player);
+  commands.insert(c);
+  kb->bindKeyUp(Key::Q, c);
+
+  c = new StopMoveDown(&player);
+  commands.insert(c);
+  kb->bindKeyUp(Key::S, c);
+
+  c = new StopMoveRight(&player);
+  commands.insert(c);
+  kb->bindKeyUp(Key::D, c);
+
+  c = new MoveUp(&player);
+  commands.insert(c);
+  kb->bindKeyDown(Key::Z, c);
+
+  c = new MoveLeft(&player);
+  commands.insert(c);
+  kb->bindKeyDown(Key::Q, c);
+
+  c = new MoveDown(&player);
+  commands.insert(c);
+  kb->bindKeyDown(Key::S, c);
+
+  c = new MoveRight(&player);
+  commands.insert(c);
+  kb->bindKeyDown(Key::D, c);
+
+  c = new ExitToMenu(e);
+  commands.insert(c);
+  kb->bindKeyDown(Key::M, c);
 }
 
 void Game::cleanUp() {
-
-}
-
-void Game::handleInputs(Engine* engine) {
-  GameState::handleInputs(engine);
-
-  vector<int> commands = kb->getEvents();
-  for (int c : commands) {
-    switch(c) {
-      case CommandNames::move_left:
-        player.vx -= 1;
-        break;
-      case CommandNames::move_right:
-        player.vx += 1;
-        break;
-      case CommandNames::move_up:
-        player.vy -= 1;
-        break;
-      case CommandNames::move_down:
-        player.vy += 1;
-        break;
-      case CommandNames::stop_move_left:
-        player.vx += 1;
-        break;
-      case CommandNames::stop_move_right:
-        player.vx -= 1;
-        break;
-      case CommandNames::stop_move_up:
-        player.vy += 1;
-        break;
-      case CommandNames::stop_move_down:
-        player.vy -= 1;
-        break;
-      case CommandNames::exit_to_menu:
-        engine->popState();
-        break;
-    }
+  for (Command* c : commands) {
+    if (c) delete c;
   }
+
+  commands.clear();
 }
 
 void Game::update(int dt) {

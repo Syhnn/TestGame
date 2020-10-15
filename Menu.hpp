@@ -5,19 +5,22 @@
 #include "Yume/GameState.hpp"
 
 
+class Command;
+
+
 class Menu : public GameState {
 public:
   Menu();
 
-  void init(DisplayManager* dm) override;
+  void init(Engine* e, DisplayManager* dm) override;
   void cleanUp() override;
 
-  void handleInputs(Engine* engine) override;
   void update(int dt) override;
   void display(const DisplayManager* dm, const int dt) override;
 
 private:
-  int nextState;
+  Command* nextState;
+
   int text;
 };
 

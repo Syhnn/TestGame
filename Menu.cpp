@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include "Yume/Command.hpp"
 #include "Yume/DisplayManager.hpp"
 #include "Yume/KeyBinds.hpp"
 
@@ -11,39 +12,46 @@
 using namespace std;
 
 
+class NextState : public Command {
+public:
+  NextState(Engine* e) : engine(e) {}
+
+  void callback() override {
+    if (engine) engine->pushState(new Game());
+  }
+
+private:
+  Engine* engine;
+};
+
+
 // Constructors and destructor
 
 Menu::Menu() :
   GameState(),
 
-  nextState(10),
+  nextState(nullptr),
+
   text(-1)
 {}
 
 
 // Public methods
 
-void Menu::init(DisplayManager* dm) {
+void Menu::init(Engine* e, DisplayManager* dm) {
   text = dm->loadText("Main Menu :D");
   if (text == -1) {
     cout << "Couldn't load text" << endl;
   }
 
+  nextState = new NextState(e);
   kb->bindKeyUp(Key::N, nextState);
 }
 
 void Menu::cleanUp() {
-
-}
-
-void Menu::handleInputs(Engine* engine) {
-  GameState::handleInputs(engine);
-
-  vector<int> commands = kb->getEvents();
-  for (int command : commands) {
-    if (command == nextState) {
-      engine->pushState(new Game());
-    }
+  if (nextState) {
+    delete nextState;
+    nextState = nullptr;
   }
 }
 
