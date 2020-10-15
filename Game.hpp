@@ -8,7 +8,7 @@
 #include "Player.hpp"
 
 
-enum CommandNames { move_right, move_left, move_up, move_down, stop_move_right, stop_move_left, stop_move_up, stop_move_down };
+enum CommandNames { move_right, move_left, move_up, move_down, stop_move_right, stop_move_left, stop_move_up, stop_move_down, exit_to_menu };
 
 
 class Game : public GameState {

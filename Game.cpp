@@ -12,7 +12,9 @@ using namespace std;
 // Constructors and destructor
 
 Game::Game() :
-  GameState()
+  GameState(),
+
+  text(-1)
 {}
 
 
@@ -49,6 +51,7 @@ void Game::init(DisplayManager* dm) {
   kb->bindKeyDown(Key::Q, CommandNames::move_left);
   kb->bindKeyDown(Key::S, CommandNames::move_down);
   kb->bindKeyDown(Key::D, CommandNames::move_right);
+  kb->bindKeyDown(Key::M, CommandNames::exit_to_menu);
 }
 
 void Game::cleanUp() {
@@ -84,6 +87,9 @@ void Game::handleInputs(Engine* engine) {
         break;
       case CommandNames::stop_move_down:
         player.vy -= 1;
+        break;
+      case CommandNames::exit_to_menu:
+        engine->popState();
         break;
     }
   }

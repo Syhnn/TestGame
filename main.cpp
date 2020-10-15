@@ -3,7 +3,7 @@
 
 #include "Yume/Engine.hpp"
 
-#include "Game.hpp"
+#include "Menu.hpp"
 
 
 using namespace std;
@@ -17,8 +17,8 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  Game g;
-  e.pushState(&g);
+  Menu m;
+  e.pushState(&m);
 
   e.mainloop();
 
