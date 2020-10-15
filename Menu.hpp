@@ -5,7 +5,7 @@
 #include "Yume/GameState.hpp"
 
 
-class Command;
+class KeyBind;
 
 
 class Menu : public GameState {
@@ -19,7 +19,7 @@ public:
   void display(const DisplayManager* dm, const int dt) override;
 
 private:
-  Command* nextState;
+  KeyBind* nextState;
 
   int text;
 };

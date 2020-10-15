@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <string>
-#include "Yume/Command.hpp"
 #include "Yume/DisplayManager.hpp"
 #include "Yume/KeyBinds.hpp"
 
@@ -12,7 +11,7 @@
 using namespace std;
 
 
-class NextState : public Command {
+class NextState : public KeyBind {
 public:
   NextState(Engine* e) : engine(e) {}
 
