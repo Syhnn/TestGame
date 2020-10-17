@@ -5,31 +5,16 @@
 #include "Yume/DisplayManager.hpp"
 #include "Yume/KeyBinds.hpp"
 
-#include "Game.hpp"
+#include "MenuCommands.hpp"
 
 
 using namespace std;
-
-
-class NextState : public KeyBind {
-public:
-  NextState(Engine* e) : engine(e) {}
-
-  void callback() override {
-    if (engine) engine->pushState(new Game());
-  }
-
-private:
-  Engine* engine;
-};
 
 
 // Constructors and destructor
 
 Menu::Menu() :
   GameState(),
-
-  nextState(nullptr),
 
   text(-1)
 {}
@@ -43,15 +28,12 @@ void Menu::init(Engine* e, DisplayManager* dm) {
     cout << "Couldn't load text" << endl;
   }
 
-  nextState = new NextState(e);
-  kb->bindKeyUp(Key::N, nextState);
+  MenuCommands::init(e);
+  kb->bindKeyDown(Key::N, MenuCommands::enterGame);
 }
 
 void Menu::cleanUp() {
-  if (nextState) {
-    delete nextState;
-    nextState = nullptr;
-  }
+  //
 }
 
 void Menu::update(int dt) {

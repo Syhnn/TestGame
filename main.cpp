@@ -9,7 +9,17 @@
 using namespace std;
 
 
+class SomethingCommands {
+public:
+  static void moveRight() { cout << "move right" << endl; }
+};
+
 int main(int argc, char* argv[]) {
+  void (*func)();
+  func = SomethingCommands::moveRight;
+  func();
+
+
   Engine e;
 
   if (!e.init()) {

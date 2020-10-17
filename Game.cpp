@@ -5,117 +5,11 @@
 #include "Yume/DisplayManager.hpp"
 #include "Yume/KeyBinds.hpp"
 
+#include "GameCommands.hpp"
+
 
 using namespace std;
 
-
-class MoveRight : public KeyBind {
-public:
-  MoveRight(Player* p) : player(p) {}
-
-  void callback() override {
-    if (player) player->vx += 1;
-  }
-
-private:
-  Player* player;
-};
-
-class MoveLeft : public KeyBind {
-public:
-  MoveLeft(Player* p) : player(p) {}
-
-  void callback() override {
-    if (player) player->vx -= 1;
-  }
-
-private:
-  Player* player;
-};
-
-class MoveUp : public KeyBind {
-public:
-  MoveUp(Player* p) : player(p) {}
-
-  void callback() override {
-    if (player) player->vy -= 1;
-  }
-
-private:
-  Player* player;
-};
-
-class MoveDown : public KeyBind {
-public:
-  MoveDown(Player* p) : player(p) {}
-
-  void callback() override {
-    if (player) player->vy += 1;
-  }
-
-private:
-  Player* player;
-};
-
-class StopMoveRight : public KeyBind {
-public:
-  StopMoveRight(Player* p) : player(p) {}
-
-  void callback() override {
-    if (player) player->vx -= 1;
-  }
-
-private:
-  Player* player;
-};
-
-class StopMoveLeft : public KeyBind {
-public:
-  StopMoveLeft(Player* p) : player(p) {}
-
-  void callback() override {
-    if (player) player->vx += 1;
-  }
-
-private:
-  Player* player;
-};
-
-class StopMoveUp : public KeyBind {
-public:
-  StopMoveUp(Player* p) : player(p) {}
-
-  void callback() override {
-    if (player) player->vy += 1;
-  }
-
-private:
-  Player* player;
-};
-
-class StopMoveDown : public KeyBind {
-public:
-  StopMoveDown(Player* p) : player(p) {}
-
-  void callback() override {
-    if (player) player->vy -= 1;
-  }
-
-private:
-  Player* player;
-};
-
-class ExitToMenu : public KeyBind {
-public:
-  ExitToMenu(Engine* e) : engine(e) {}
-
-  void callback() override {
-    if (engine) engine->popState();
-  }
-
-private:
-  Engine* engine;
-};
 
 // Constructors and destructor
 
@@ -151,44 +45,16 @@ void Game::init(Engine* e, DisplayManager* dm) {
   player.texture_id = tmp;
   addEntity(&player);
 
-
-  KeyBind* b(nullptr);
-
-  b = new StopMoveUp(&player);
-  commands.insert(b);
-  kb->bindKeyUp(Key::Z, b);
-
-  b = new StopMoveLeft(&player);
-  commands.insert(b);
-  kb->bindKeyUp(Key::Q, b);
-
-  b = new StopMoveDown(&player);
-  commands.insert(b);
-  kb->bindKeyUp(Key::S, b);
-
-  b = new StopMoveRight(&player);
-  commands.insert(b);
-  kb->bindKeyUp(Key::D, b);
-
-  b = new MoveUp(&player);
-  commands.insert(b);
-  kb->bindKeyDown(Key::Z, b);
-
-  b = new MoveLeft(&player);
-  commands.insert(b);
-  kb->bindKeyDown(Key::Q, b);
-
-  b = new MoveDown(&player);
-  commands.insert(b);
-  kb->bindKeyDown(Key::S, b);
-
-  b = new MoveRight(&player);
-  commands.insert(b);
-  kb->bindKeyDown(Key::D, b);
-
-  b = new ExitToMenu(e);
-  commands.insert(b);
-  kb->bindKeyDown(Key::M, b);
+  GameCommands::init(e, &player);
+  kb->bindKeyDown(Key::D, GameCommands::moveRight);
+  kb->bindKeyDown(Key::Q, GameCommands::moveLeft);
+  kb->bindKeyDown(Key::Z, GameCommands::moveUp);
+  kb->bindKeyDown(Key::S, GameCommands::moveDown);
+  kb->bindKeyUp(Key::D, GameCommands::stopMoveRight);
+  kb->bindKeyUp(Key::Q, GameCommands::stopMoveLeft);
+  kb->bindKeyUp(Key::Z, GameCommands::stopMoveUp);
+  kb->bindKeyUp(Key::S, GameCommands::stopMoveDown);
+  kb->bindKeyDown(Key::M, GameCommands::exitToMenu);
 }
 
 void Game::cleanUp() {

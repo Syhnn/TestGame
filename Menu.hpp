@@ -19,8 +19,6 @@ public:
   void display(const DisplayManager* dm, const int dt) override;
 
 private:
-  KeyBind* nextState;
-
   int text;
 };
 
