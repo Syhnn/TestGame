@@ -9,7 +9,7 @@ using namespace std;
 // Constructors and destructor
 
 Player::Player() :
-  Entity(),
+  Actor(),
 
   pose(0),
   frame(0),

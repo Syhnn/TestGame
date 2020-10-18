@@ -1,10 +1,10 @@
 #ifndef _PLAYER_HPP_
 #define _PLAYER_HPP_
 
-#include "Yume/Entity.hpp"
+#include "Yume/Actor.hpp"
 
 
-class Player : public Entity {
+class Player : public Actor {
 public:
   Player();
 

@@ -5,12 +5,11 @@
 
 #include "Yume/Engine.hpp"
 #include "Yume/GameState.hpp"
-#include "Yume/Entity.hpp"
-
-#include "Player.hpp"
 
 
 class KeyBind;
+class Player;
+class TileMap;
 
 enum CommandNames { move_right, move_left, move_up, move_down, stop_move_right, stop_move_left, stop_move_up, stop_move_down, exit_to_menu };
 
@@ -26,9 +25,12 @@ public:
   void display(const DisplayManager* dm, const int dt) override;
 
 private:
-  Player player;
+  Player* player;
+  TileMap* map;
 
-  int text;
+  int textTextureId;
+  int playerTextureId;
+  int tilemapTextureId;
 
   std::set<KeyBind*> commands;
 };

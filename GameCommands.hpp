@@ -21,8 +21,8 @@ public:
   static void exitToMenu();
 
 private:
-  static Player* player;
   static Engine* engine;
+  static Player* player;
 };
 
 #endif // _GAME_COMMANDS_HPP_
