@@ -59,19 +59,34 @@ void Game::init(Engine* e, DisplayManager* dm) {
   if (tilemapTextureId == -1) {
     cout << "Couldn't load texture " << path << endl;
   } else {
-    int left_wall = dm->addTextureClip(tilemapTextureId, 0, 0, 16, 16);
-    int right_wall = dm->addTextureClip(tilemapTextureId, 80, 16, 16, 16);
-    int top_wall = dm->addTextureClip(tilemapTextureId, 16, 0, 16, 16);
-    int bottom_wall = dm->addTextureClip(tilemapTextureId, 16, 64, 16, 16);
-    int bl_corner = dm->addTextureClip(tilemapTextureId, 0, 64, 16, 16);
-    int br_corner = dm->addTextureClip(tilemapTextureId, 80, 64, 16, 16);
-    int floor = dm->addTextureClip(tilemapTextureId, 16, 16, 16, 16);
-    map = new TileMap(8, 6, 32, {{left_wall, top_wall, top_wall, top_wall, top_wall, top_wall, top_wall, right_wall},
-                                 {left_wall, floor, floor, floor, floor, floor, floor, right_wall},
-                                 {left_wall, floor, floor, floor, floor, floor, floor, right_wall},
-                                 {left_wall, floor, floor, floor, floor, floor, floor, right_wall},
-                                 {left_wall, floor, floor, floor, floor, floor, floor, right_wall},
-                                 {bl_corner, bottom_wall, bottom_wall, bottom_wall, bottom_wall, bottom_wall, bottom_wall, br_corner}});
+    // Will be replaced with file data import because this is ugly
+    int walls_l1 = dm->addTextureClip(tilemapTextureId,  0,  0, 16, 16);
+    int walls_r1 = dm->addTextureClip(tilemapTextureId, 80, 16, 16, 16);
+    int walls_t1 = dm->addTextureClip(tilemapTextureId, 16,  0, 16, 16);
+    int walls_t2 = dm->addTextureClip(tilemapTextureId, 32,  0, 16, 16);
+    int walls_t3 = dm->addTextureClip(tilemapTextureId, 48,  0, 16, 16);
+    int walls_b1 = dm->addTextureClip(tilemapTextureId, 16, 64, 16, 16);
+    int walls_b2 = dm->addTextureClip(tilemapTextureId, 32, 64, 16, 16);
+    int walls_bl = dm->addTextureClip(tilemapTextureId,  0, 64, 16, 16);
+    int walls_br = dm->addTextureClip(tilemapTextureId, 80, 64, 16, 16);
+    int floor_tl = dm->addTextureClip(tilemapTextureId, 16, 16, 16, 16);
+    int floor_tr = dm->addTextureClip(tilemapTextureId, 64, 16, 16, 16);
+    int floor_t1 = dm->addTextureClip(tilemapTextureId, 32, 16, 16, 16);
+    int floor_t2 = dm->addTextureClip(tilemapTextureId, 48, 16, 16, 16);
+    int floor_l1 = dm->addTextureClip(tilemapTextureId, 16, 32, 16, 16);
+    int floor_r1 = dm->addTextureClip(tilemapTextureId, 64, 32, 16, 16);
+    int floor_c1 = dm->addTextureClip(tilemapTextureId, 32, 32, 16, 16);
+    int floor_c2 = dm->addTextureClip(tilemapTextureId, 48, 32, 16, 16);
+    int floor_bl = dm->addTextureClip(tilemapTextureId, 16, 48, 16, 16);
+    int floor_br = dm->addTextureClip(tilemapTextureId, 64, 48, 16, 16);
+    int floor_b1 = dm->addTextureClip(tilemapTextureId, 32, 48, 16, 16);
+    int floor_b2 = dm->addTextureClip(tilemapTextureId, 48, 48, 16, 16);
+    map = new TileMap(8, 6, 32, {{walls_l1, walls_t1, walls_t2, walls_t1, walls_t3, walls_t3, walls_t1, walls_r1},
+                                 {walls_l1, floor_tl, floor_t1, floor_t1, floor_t2, floor_t1, floor_tr, walls_r1},
+                                 {walls_l1, floor_l1, floor_c2, floor_c2, floor_c1, floor_c2, floor_r1, walls_r1},
+                                 {walls_l1, floor_l1, floor_c1, floor_c2, floor_c2, floor_c1, floor_r1, walls_r1},
+                                 {walls_l1, floor_bl, floor_b1, floor_b2, floor_b1, floor_b1, floor_br, walls_r1},
+                                 {walls_bl, walls_b1, walls_b2, walls_b1, walls_b2, walls_b2, walls_b1, walls_br}});
     map->posx = 384;
     map->posy = 288;
     map->texture_id = tilemapTextureId;
@@ -122,9 +137,7 @@ void Game::update(int dt) {
 }
 
 void Game::display(const DisplayManager* dm, const int dt) {
-  //GameState::display(dm, dt);
   dm->clear();
-  //dm->renderTileMap(map->texture_id, map->posx, map->posy, map);
   dm->renderTexture(map->fixed_texture_id, map->posx, map->posy);
   dm->renderTexture(textTextureId, 10, 10);
   dm->renderClip(player->texture_id, player->posx, player->posy, player->getClipId(dt));
