@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include "Yume/DataLoader.hpp"
 #include "Yume/DisplayManager.hpp"
 #include "Yume/KeyBinds.hpp"
 #include "Yume/TileMap.hpp"
@@ -35,6 +36,7 @@ void Game::init(Engine* e, DisplayManager* dm) {
   int playerTextureId = dm->loadTexture(path, 32, 32);
   if (playerTextureId == -1) {
     cout << "Couldn't load texture " << path << endl;
+    e->exit();
   } else {
     for (int pose(0); pose < 4; ++pose) {
       for (int frame(0); frame < 4; ++frame) {
@@ -52,46 +54,28 @@ void Game::init(Engine* e, DisplayManager* dm) {
   textTextureId = dm->loadText("abcdefghijklmnopqrstuvwxyz");
   if (textTextureId == -1) {
     cout << "Couldn't load text" << endl;
+    e->exit();
   }
 
-  path = "assets/2D Pixel Dungeon Asset Pack/character and tileset/Dungeon_Tileset.png";
-  tilemapTextureId = dm->loadTexture(path, 16, 16);
+  path = "assets/json/tileset.json";
+  tilemapTextureId = DataLoader::initTextureFromTileset(dm, path);
   if (tilemapTextureId == -1) {
-    cout << "Couldn't load texture " << path << endl;
+    cout << "Couldn't load texture from json" << path << endl;
+    e->exit();
   } else {
-    // Will be replaced with file data import because this is ugly
-    int walls_l1 = dm->addTextureClip(tilemapTextureId,  0,  0, 16, 16);
-    int walls_r1 = dm->addTextureClip(tilemapTextureId, 80, 16, 16, 16);
-    int walls_t1 = dm->addTextureClip(tilemapTextureId, 16,  0, 16, 16);
-    int walls_t2 = dm->addTextureClip(tilemapTextureId, 32,  0, 16, 16);
-    int walls_t3 = dm->addTextureClip(tilemapTextureId, 48,  0, 16, 16);
-    int walls_b1 = dm->addTextureClip(tilemapTextureId, 16, 64, 16, 16);
-    int walls_b2 = dm->addTextureClip(tilemapTextureId, 32, 64, 16, 16);
-    int walls_bl = dm->addTextureClip(tilemapTextureId,  0, 64, 16, 16);
-    int walls_br = dm->addTextureClip(tilemapTextureId, 80, 64, 16, 16);
-    int floor_tl = dm->addTextureClip(tilemapTextureId, 16, 16, 16, 16);
-    int floor_tr = dm->addTextureClip(tilemapTextureId, 64, 16, 16, 16);
-    int floor_t1 = dm->addTextureClip(tilemapTextureId, 32, 16, 16, 16);
-    int floor_t2 = dm->addTextureClip(tilemapTextureId, 48, 16, 16, 16);
-    int floor_l1 = dm->addTextureClip(tilemapTextureId, 16, 32, 16, 16);
-    int floor_r1 = dm->addTextureClip(tilemapTextureId, 64, 32, 16, 16);
-    int floor_c1 = dm->addTextureClip(tilemapTextureId, 32, 32, 16, 16);
-    int floor_c2 = dm->addTextureClip(tilemapTextureId, 48, 32, 16, 16);
-    int floor_bl = dm->addTextureClip(tilemapTextureId, 16, 48, 16, 16);
-    int floor_br = dm->addTextureClip(tilemapTextureId, 64, 48, 16, 16);
-    int floor_b1 = dm->addTextureClip(tilemapTextureId, 32, 48, 16, 16);
-    int floor_b2 = dm->addTextureClip(tilemapTextureId, 48, 48, 16, 16);
-    map = new TileMap(8, 6, 32, {{walls_l1, walls_t1, walls_t2, walls_t1, walls_t3, walls_t3, walls_t1, walls_r1},
-                                 {walls_l1, floor_tl, floor_t1, floor_t1, floor_t2, floor_t1, floor_tr, walls_r1},
-                                 {walls_l1, floor_l1, floor_c2, floor_c2, floor_c1, floor_c2, floor_r1, walls_r1},
-                                 {walls_l1, floor_l1, floor_c1, floor_c2, floor_c2, floor_c1, floor_r1, walls_r1},
-                                 {walls_l1, floor_bl, floor_b1, floor_b2, floor_b1, floor_b1, floor_br, walls_r1},
-                                 {walls_bl, walls_b1, walls_b2, walls_b1, walls_b2, walls_b2, walls_b1, walls_br}});
-    map->posx = 384;
-    map->posy = 288;
-    map->texture_id = tilemapTextureId;
-    if (dm->createTextureFromTilemap(map) == -1) {
-      cout << "Couldn't generate texture from tilemap" << endl;
+    path = "assets/json/tilemap.json";
+    map = DataLoader::initTileMapFromJSON(path, tilemapTextureId);
+    if (!map) {
+      cout << "Couldn't initialize TileMap from json" << endl;
+      e->exit();
+    } else {
+      map->posx = 0;
+      map->posy = 0;
+      map->texture_id = tilemapTextureId;
+      if (dm->createTextureFromTilemap(map) == -1) {
+        cout << "Couldn't generate texture from tilemap" << endl;
+        e->exit();
+      }
     }
   }
   
@@ -130,10 +114,10 @@ void Game::cleanUp() {
 void Game::update(int dt) {
   player->posx += player->vx * dt / 2;
   player->posy += player->vy * dt / 2;
-  if (player->posx > 576) player->posx = 576;
-  else if (player->posx < 416) player->posx = 416;
-  if (player->posy > 416) player->posy = 416;
-  else if (player->posy < 320) player->posy = 320;
+  if (player->posx > 960) player->posx = 960;
+  else if (player->posx < 32) player->posx = 32;
+  if (player->posy > 704) player->posy = 704;
+  else if (player->posy < 32) player->posy = 32;
 }
 
 void Game::display(const DisplayManager* dm, const int dt) {
