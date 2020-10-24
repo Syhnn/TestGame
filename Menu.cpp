@@ -40,7 +40,7 @@ void Menu::update(int dt) {
   // nothing
 }
 
-void Menu::display(const DisplayManager* dm, const int dt) {
+void Menu::display(DisplayManager* const dm, const int dt) {
   GameState::display(dm, dt);
   dm->renderTexture(text, 420, 300);
   dm->render();

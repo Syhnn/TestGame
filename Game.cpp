@@ -94,12 +94,6 @@ void Game::init(Engine* e, DisplayManager* dm) {
 }
 
 void Game::cleanUp() {
-  for (KeyBind* c : commands) {
-    if (c) delete c;
-  }
-
-  commands.clear();
-
   if (player) {
     delete player;
     player = nullptr;
@@ -120,7 +114,7 @@ void Game::update(int dt) {
   else if (player->posy < 32) player->posy = 32;
 }
 
-void Game::display(const DisplayManager* dm, const int dt) {
+void Game::display(DisplayManager* const dm, const int dt) {
   dm->clear();
   dm->renderTexture(map->fixed_texture_id, map->posx, map->posy);
   dm->renderTexture(textTextureId, 10, 10);

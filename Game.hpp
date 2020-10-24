@@ -7,7 +7,6 @@
 #include "Yume/GameState.hpp"
 
 
-class KeyBind;
 class Player;
 class TileMap;
 
@@ -22,7 +21,7 @@ public:
   void cleanUp() override;
 
   void update(int dt) override;
-  void display(const DisplayManager* dm, const int dt) override;
+  void display(DisplayManager* const dm, const int dt) override;
 
 private:
   Player* player;
@@ -31,8 +30,6 @@ private:
   int textTextureId;
   int playerTextureId;
   int tilemapTextureId;
-
-  std::set<KeyBind*> commands;
 };
 
 #endif // _GAME_HPP_
