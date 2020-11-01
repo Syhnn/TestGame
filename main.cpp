@@ -17,6 +17,10 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
+  if (!e.loadTextComponent("assets/monogram_extended.ttf")) {
+    cout << "text init failed" << endl;
+  }
+
   Menu m;
   e.pushState(&m);
 
