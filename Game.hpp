@@ -25,7 +25,7 @@ public:
 
 private:
   Player* player;
-  TileMap* map;
+  TileMap* tilemap;
 
   int textTextureId;
   int playerTextureId;

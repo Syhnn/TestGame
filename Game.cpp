@@ -1,6 +1,7 @@
 #include "Game.hpp"
 
 #include <iostream>
+#include <map>
 #include <string>
 #include "Yume/DataLoader.hpp"
 #include "Yume/DisplayManager.hpp"
@@ -24,7 +25,7 @@ Game::Game() :
   tilemapTextureId(-1),
 
   player(nullptr),
-  map(nullptr)
+  tilemap(nullptr)
 {}
 
 
@@ -32,18 +33,13 @@ Game::Game() :
 
 void Game::init(Engine* e, DisplayManager* dm) {
   // import assets
-  string path = "assets/testchar.png";
-  int playerTextureId = dm->loadTexture(path, 32, 32);
+  map<string, Entity*> ent = DataLoader::loadStateData(dm, "assets/json/game_data.json");
+
+  int playerTextureId = dm->getTextureId("test_char");
   if (playerTextureId == -1) {
-    cout << "Couldn't load texture " << path << endl;
+    cout << "Couldn't find texture " << endl;
     e->exit();
   } else {
-    for (int pose(0); pose < 4; ++pose) {
-      for (int frame(0); frame < 4; ++frame) {
-        dm->addTextureClip(playerTextureId, frame * 32, pose * 32, 32, 32);
-      }
-    }
-
     player = new Player();
     player->posx = 496;
     player->posy = 368;
@@ -57,26 +53,11 @@ void Game::init(Engine* e, DisplayManager* dm) {
     e->exit();
   }
 
-  path = "assets/json/tileset.json";
-  tilemapTextureId = DataLoader::initTextureFromTileset(dm, path);
-  if (tilemapTextureId == -1) {
-    cout << "Couldn't load texture from json" << path << endl;
+  if (ent.find("level_1_tilemap") == ent.end()) {
+    cout << "couldn't find tilemap in imported data" << endl;
     e->exit();
   } else {
-    path = "assets/json/tilemap.json";
-    map = DataLoader::initTileMapFromJSON(path, tilemapTextureId);
-    if (!map) {
-      cout << "Couldn't initialize TileMap from json" << endl;
-      e->exit();
-    } else {
-      map->posx = 0;
-      map->posy = 0;
-      map->texture_id = tilemapTextureId;
-      if (dm->createTextureFromTilemap(map) == -1) {
-        cout << "Couldn't generate texture from tilemap" << endl;
-        e->exit();
-      }
-    }
+    tilemap = dynamic_cast<TileMap*>(ent["level_1_tilemap"]);
   }
   
   GameCommands::init(e, player);
@@ -99,9 +80,9 @@ void Game::cleanUp() {
     player = nullptr;
   }
 
-  if (map) {
-    delete map;
-    map = nullptr;
+  if (tilemap) {
+    delete tilemap;
+    tilemap = nullptr;
   }
 }
 
@@ -116,7 +97,7 @@ void Game::update(int dt) {
 
 void Game::display(DisplayManager* const dm, const int dt) {
   dm->clear();
-  dm->renderTexture(map->fixed_texture_id, map->posx, map->posy);
+  dm->renderTexture(tilemap->fixed_texture_id, tilemap->posx, tilemap->posy);
   dm->renderTexture(textTextureId, 10, 10);
   dm->renderClip(player->texture_id, player->posx, player->posy, player->getClipId(dt));
   dm->render();
